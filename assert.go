@@ -25,11 +25,7 @@ type (
 func Equal[T E | F, V any](t T, got, want V, formatAndArgs ...any) {
 	(*testing.T)(t).Helper()
 	if !reflect.DeepEqual(got, want) {
-		if len(formatAndArgs) > 0 {
-			method(t)(formatAndArgs[0].(string), formatAndArgs[1:]...)
-		} else {
-			method(t)("got %v; want %v", got, want)
-		}
+		fail(t, formatAndArgs, "got %v; want %v", got, want)
 	}
 }
 
@@ -39,11 +35,7 @@ func Equal[T E | F, V any](t T, got, want V, formatAndArgs ...any) {
 func NoErr[T E | F](t T, err error, formatAndArgs ...any) {
 	(*testing.T)(t).Helper()
 	if err != nil {
-		if len(formatAndArgs) > 0 {
-			method(t)(formatAndArgs[0].(string), formatAndArgs[1:]...)
-		} else {
-			method(t)("got %v; want no error", err)
-		}
+		fail(t, formatAndArgs, "got %v; want no error", err)
 	}
 }
 
@@ -53,11 +45,7 @@ func NoErr[T E | F](t T, err error, formatAndArgs ...any) {
 func IsErr[T E | F](t T, err, target error, formatAndArgs ...any) {
 	(*testing.T)(t).Helper()
 	if !errors.Is(err, target) {
-		if len(formatAndArgs) > 0 {
-			method(t)(formatAndArgs[0].(string), formatAndArgs[1:]...)
-		} else {
-			method(t)("got %v; want %v", err, target)
-		}
+		fail(t, formatAndArgs, "got %v; want %v", err, target)
 	}
 }
 
@@ -67,21 +55,22 @@ func IsErr[T E | F](t T, err, target error, formatAndArgs ...any) {
 func AsErr[T E | F](t T, err error, target any, formatAndArgs ...any) {
 	(*testing.T)(t).Helper()
 	if !errors.As(err, target) {
-		if len(formatAndArgs) > 0 {
-			method(t)(formatAndArgs[0].(string), formatAndArgs[1:]...)
-		} else {
-			method(t)("got %T; want %T", err, target)
-		}
+		fail(t, formatAndArgs, "got %T; want %T", err, target)
 	}
 }
 
-// method returns the method to call based on t's type.
-func method[T E | F](t T) func(format string, args ...any) {
+// fail calls either [testing.T.Errorf] or [testing.T.Fatalf] based on t's type.
+func fail[T E | F](t T, customFormatAndArgs []any, format string, args ...any) {
+	(*testing.T)(t).Helper()
+	if len(customFormatAndArgs) > 0 {
+		format = customFormatAndArgs[0].(string)
+		args = customFormatAndArgs[1:]
+	}
 	switch any(t).(type) {
 	case E:
-		return (*testing.T)(t).Errorf
+		(*testing.T)(t).Errorf(format, args...)
 	case F:
-		return (*testing.T)(t).Fatalf
+		(*testing.T)(t).Fatalf(format, args...)
 	default:
 		panic("unreachable")
 	}
