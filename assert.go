@@ -78,7 +78,7 @@ func AsErr[T E | F](t T, err error, target any, formatAndArgs ...any) {
 // method returns the method to call based on t's type.
 func method[T E | F](t T) func(format string, args ...any) {
 	switch any(t).(type) {
-	case E, *testing.T:
+	case E:
 		return (*testing.T)(t).Errorf
 	case F:
 		return (*testing.T)(t).Fatalf
