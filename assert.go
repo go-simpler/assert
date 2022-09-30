@@ -82,5 +82,5 @@ func fail[T parameter](t tb, customFormatAndArgs []any, format string, args ...a
 		format = customFormatAndArgs[0].(string)
 		args = customFormatAndArgs[1:]
 	}
-	(*new(T)).method(t)(format, args...)
+	(*new(T)).method(t)(format, args...) //nolint:gocritic // newDeref: false positive?
 }
