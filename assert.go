@@ -5,73 +5,82 @@ package assert
 import (
 	"errors"
 	"reflect"
-	"testing"
 )
 
-// These types control the behaviour of an assertion in case it fails. Either
-// [E] or [F] should be specified as a type parameter.
-type (
-	// E marks the test as having failed but continues its execution (similar to
-	// [testing.T.Errorf]).
-	E *testing.T
-	// F marks the test as having failed and stops its execution (similar to
-	// [testing.T.Fatalf]).
-	F *testing.T
-)
+// tb is a tiny subset of [testing.TB] used by [assert].
+type tb interface {
+	Helper()
+	Errorf(format string, args ...any)
+	Fatalf(format string, args ...any)
+}
+
+// parameter is type parameter that control the behaviour of an assertion in
+// case it fails. Either [E] or [F] should be specified when calling the
+// assertion.
+type parameter interface {
+	// method returns t's method to call, either [tb.Errorf] or [tb.Fatalf].
+	method(t tb) func(format string, args ...any)
+}
+
+// E is a [parameter] that marks the test as having failed but continues its
+// execution (similar to [testing.T.Errorf]).
+type E struct{}
+
+func (E) method(t tb) func(format string, args ...any) { return t.Errorf }
+
+// F is a [parameter] that marks the test as having failed and stops its
+// execution (similar to [testing.T.Fatalf]).
+type F struct{}
+
+func (F) method(t tb) func(format string, args ...any) { return t.Fatalf }
 
 // Equal asserts that got and want are equal. Optional formatAndArgs can be
 // provided to customize the error message, the first element must be a string,
 // otherwise Equal panics.
-func Equal[T E | F, V any](t T, got, want V, formatAndArgs ...any) {
-	(*testing.T)(t).Helper()
+func Equal[T parameter, V any](t tb, got, want V, formatAndArgs ...any) {
+	t.Helper()
 	if !reflect.DeepEqual(got, want) {
-		fail(t, formatAndArgs, "got %v; want %v", got, want)
+		fail[T](t, formatAndArgs, "got %v; want %v", got, want)
 	}
 }
 
 // NoErr asserts that err is nil. Optional formatAndArgs can be provided to
 // customize the error message, the first element must be a string, otherwise
 // NoErr panics.
-func NoErr[T E | F](t T, err error, formatAndArgs ...any) {
-	(*testing.T)(t).Helper()
+func NoErr[T parameter](t tb, err error, formatAndArgs ...any) {
+	t.Helper()
 	if err != nil {
-		fail(t, formatAndArgs, "got %v; want no error", err)
+		fail[T](t, formatAndArgs, "got %v; want no error", err)
 	}
 }
 
 // IsErr asserts that [errors.Is](err, target) is true. Optional formatAndArgs
 // can be provided to customize the error message, the first element must be a
 // string, otherwise IsErr panics.
-func IsErr[T E | F](t T, err, target error, formatAndArgs ...any) {
-	(*testing.T)(t).Helper()
+func IsErr[T parameter](t tb, err, target error, formatAndArgs ...any) {
+	t.Helper()
 	if !errors.Is(err, target) {
-		fail(t, formatAndArgs, "got %v; want %v", err, target)
+		fail[T](t, formatAndArgs, "got %v; want %v", err, target)
 	}
 }
 
 // AsErr asserts that [errors.As](err, target) is true. Optional formatAndArgs
 // can be provided to customize the error message, the first element must be a
 // string, otherwise AsErr panics.
-func AsErr[T E | F](t T, err error, target any, formatAndArgs ...any) {
-	(*testing.T)(t).Helper()
+func AsErr[T parameter](t tb, err error, target any, formatAndArgs ...any) {
+	t.Helper()
 	if !errors.As(err, target) {
-		fail(t, formatAndArgs, "got %T; want %T", err, target)
+		fail[T](t, formatAndArgs, "got %T; want %T", err, target)
 	}
 }
 
-// fail calls either [testing.T.Errorf] or [testing.T.Fatalf] based on t's type.
-func fail[T E | F](t T, customFormatAndArgs []any, format string, args ...any) {
-	(*testing.T)(t).Helper()
+// fail marks the test as having failed and continues/stops its execution based
+// on T's type.
+func fail[T parameter](t tb, customFormatAndArgs []any, format string, args ...any) {
+	t.Helper()
 	if len(customFormatAndArgs) > 0 {
 		format = customFormatAndArgs[0].(string)
 		args = customFormatAndArgs[1:]
 	}
-	switch any(t).(type) {
-	case E:
-		(*testing.T)(t).Errorf(format, args...)
-	case F:
-		(*testing.T)(t).Fatalf(format, args...)
-	default:
-		panic("unreachable")
-	}
+	(*new(T)).method(t)(format, args...)
 }
