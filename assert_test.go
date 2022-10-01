@@ -67,7 +67,7 @@ func testAssertCall(t *testing.T, got, want assertCall) {
 	}
 }
 
-// spyTB is an [assert.tb] implementation that records an [assertCall].
+// spyTB is an [assert.TB] implementation that records an [assertCall].
 type spyTB struct{ assertCall }
 
 func (tb *spyTB) Helper() { tb.helperCalls++ }
