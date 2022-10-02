@@ -2,7 +2,7 @@ package assert_test
 
 import (
 	"errors"
-	"os"
+	"io/fs"
 	"testing"
 
 	"github.com/junk1tm/assert"
@@ -12,67 +12,24 @@ import (
 var t *testing.T
 
 func ExampleEqual() {
-	// testing only:
-	if 1 != 2 {
-		t.Errorf("got %v; want %v", 1, 2)
-	}
-	// with assert:
-	assert.Equal[E](t, 1, 2)
-
-	// testing only:
-	if 1 != 2 {
-		t.Fatalf("got %v; want %v", 1, 2)
-	}
-	// with assert:
-	assert.Equal[F](t, 1, 2)
+	assert.Equal[E](t, 1, 2) // prints "got 1; want 2"
+	assert.Equal[F](t, 1, 2) // prints "got 1; want 2" and stops the test
 }
 
-var err error
-
 func ExampleNoErr() {
-	// testing only:
-	if err != nil {
-		t.Errorf("got %v; want no error", err)
-	}
-	// with assert:
-	assert.NoErr[E](t, err)
-
-	// testing only:
-	if err != nil {
-		t.Fatalf("got %v; want no error", err)
-	}
-	// with assert:
-	assert.NoErr[F](t, err)
+	err := errors.New("test")
+	assert.NoErr[E](t, err) // prints "got test; want no error"
+	assert.NoErr[F](t, err) // prints "got test; want no error" and stops the test
 }
 
 func ExampleIsErr() {
-	// testing only:
-	if !errors.Is(err, os.ErrNotExist) {
-		t.Errorf("got %v; want %v", err, os.ErrNotExist)
-	}
-	// with assert:
-	assert.IsErr[E](t, err, os.ErrNotExist)
-
-	// testing only:
-	if !errors.Is(err, os.ErrNotExist) {
-		t.Fatalf("got %v; want %v", err, os.ErrNotExist)
-	}
-	// with assert:
-	assert.IsErr[F](t, err, os.ErrNotExist)
+	err := errors.New("test")
+	assert.IsErr[E](t, err, fs.ErrNotExist) // prints "got test; want file does not exist"
+	assert.IsErr[F](t, err, fs.ErrNotExist) // prints "got test; want file does not exist" and stops the test
 }
 
 func ExampleAsErr() {
-	// testing only:
-	if !errors.As(err, new(*os.PathError)) {
-		t.Errorf("got %T; want %T", err, new(*os.PathError))
-	}
-	// with assert:
-	assert.AsErr[E](t, err, new(*os.PathError))
-
-	// testing only:
-	if !errors.As(err, new(*os.PathError)) {
-		t.Fatalf("got %T; want %T", err, new(*os.PathError))
-	}
-	// with assert:
-	assert.AsErr[F](t, err, new(*os.PathError))
+	err := errors.New("test")
+	assert.AsErr[E](t, err, new(*fs.PathError)) // prints "got *errors.errorString; want **fs.PathError"
+	assert.AsErr[F](t, err, new(*fs.PathError)) // prints "got *errors.errorString; want **fs.PathError" and stops the test
 }
