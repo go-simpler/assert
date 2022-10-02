@@ -114,8 +114,8 @@ func TestEqual(t *testing.T) {
 		"fail [F] (custom message)": {
 			fn: equalF,
 			a:  1, b: 2,
-			formatAndArgs: []any{"actual %d, expected %d", 1, 2},
-			want:          fatalfCall("actual %d, expected %d", 1, 2),
+			formatAndArgs: []any{"actual %d; expected %d", 1, 2},
+			want:          fatalfCall("actual %d; expected %d", 1, 2),
 		},
 	}
 
@@ -173,8 +173,8 @@ func TestNoErr(t *testing.T) {
 		"fail [F] (custom message)": {
 			fn:            noerrF,
 			err:           errFoo,
-			formatAndArgs: []any{"actual %v, expected no error", errFoo},
-			want:          fatalfCall("actual %v, expected no error", errFoo),
+			formatAndArgs: []any{"actual %v; expected no error", errFoo},
+			want:          fatalfCall("actual %v; expected no error", errFoo),
 		},
 	}
 
@@ -224,8 +224,8 @@ func TestIsErr(t *testing.T) {
 			fn:            iserrF,
 			err:           errFoo,
 			target:        errBar,
-			formatAndArgs: []any{"actual %v, expected %v", errFoo, errBar},
-			want:          fatalfCall("actual %v, expected %v", errFoo, errBar),
+			formatAndArgs: []any{"actual %v; expected %v", errFoo, errBar},
+			want:          fatalfCall("actual %v; expected %v", errFoo, errBar),
 		},
 	}
 
@@ -275,8 +275,8 @@ func TestAsErr(t *testing.T) {
 			fn:            aserrF,
 			err:           errFoo,
 			target:        new(barError),
-			formatAndArgs: []any{"actual %T, expected %T", errFoo, new(barError)},
-			want:          fatalfCall("actual %T, expected %T", errFoo, new(barError)),
+			formatAndArgs: []any{"actual %T; expected %T", errFoo, new(barError)},
+			want:          fatalfCall("actual %T; expected %T", errFoo, new(barError)),
 		},
 	}
 
