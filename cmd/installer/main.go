@@ -1,3 +1,5 @@
+//go:build installer
+
 // Installer is a convenience tool that copies the assertions into a project, so
 // they could be used without introducing a direct dependency. The tool
 // automatically adds a license header to all copied files, so there is no need
