@@ -47,15 +47,11 @@ func run() error {
 		return err
 	}
 
-	if err := os.Mkdir("assert", 0744); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll("assert/dotimport", 0744); err != nil && !os.IsExist(err) {
 		return err
 	}
 
 	if err := writeFile("assert/assert.go", assert.MainFile); err != nil {
-		return err
-	}
-
-	if err := os.Mkdir("assert/dotimport", 0744); err != nil && !os.IsExist(err) {
 		return err
 	}
 
@@ -95,10 +91,9 @@ func writeFile(name, content string) error {
 	defer f.Close()
 
 	write := func(s string) {
-		if err != nil {
-			return
+		if err == nil {
+			_, err = f.WriteString(s)
 		}
-		_, err = f.WriteString(s)
 	}
 
 	write("/*\n")
