@@ -19,9 +19,6 @@ assert.Equal[E](t, 1, 2) // [E] for t.Errorf()
 assert.Equal[F](t, 1, 2) // [F] for t.Fatalf()
 ```
 
-Is it an inappropriate use case for generics? Probably, but because it's a small
-testing library, I don't really care `¯\_(ツ)_/¯`.
-
 ## 📦 Install
 
 ```shell
@@ -29,12 +26,17 @@ go get github.com/junk1tm/assert
 ```
 
 ⚠️ This package is not even meant to be a dependency! It's tiny (<100 LoC) and
-[MIT-licensed](LICENSE), so you can just copy-paste it into your project. Of
-course, it is always possible to import it the usual way, but if you're
-developing a library or simply trying to minimize dependencies, I would
-recommend using `assert` as a local package.
+[MIT-licensed](LICENSE), so you can just copy-paste it into your project. There
+is a special tool to do this automatically, just add the following directive to
+any `.go` file in the root of your project and run `go generate ./...`:
 
-## 🔧 Usage
+```go
+//go:generate go run -tags=installer github.com/junk1tm/assert/cmd/installer .
+```
+
+See `cmd/installer` documentation for details.
+
+## 📋 Usage
 
 One should import the `dotimport` subpackage using dot form to be able to use
 `E`/`F` parameters as local types:
