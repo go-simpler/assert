@@ -34,12 +34,12 @@ any `.go` file in the root of your project and run `go generate ./...`:
 //go:generate go run -tags=installer github.com/junk1tm/assert/cmd/installer .
 ```
 
-See `cmd/installer` documentation for details.
+See the `cmd/installer` documentation for details.
 
 ## 📋 Usage
 
-One should import the `dotimport` subpackage using dot form to be able to use
-`E`/`F` parameters as local types:
+The `dotimport` subpackage should be dot-imported, so the `E`/`F` parameters
+could be used as local types:
 
 ```go
 "github.com/junk1tm/assert"
