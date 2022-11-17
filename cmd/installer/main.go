@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/junk1tm/assert"
@@ -36,10 +37,16 @@ func run() error {
 	if len(os.Args) < 2 {
 		return errors.New("path to package is not specified")
 	}
-	path := os.Args[1]
 
 	moduleName, err := readModuleName()
 	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(os.Args[1], "assert")
+	fullpath := filepath.Join(path, "dotimport")
+
+	if err := os.MkdirAll(fullpath, 0744); err != nil && !os.IsExist(err) {
 		return err
 	}
 
@@ -47,18 +54,18 @@ func run() error {
 		return err
 	}
 
-	if err := os.MkdirAll("assert/dotimport", 0744); err != nil && !os.IsExist(err) {
+	if err := writeFile("assert.go", assert.MainFile); err != nil {
 		return err
 	}
 
-	if err := writeFile("assert/assert.go", assert.MainFile); err != nil {
-		return err
+	// update the assert package import in the support file.
+	importPath := moduleName
+	if path != "." {
+		importPath = filepath.Join(moduleName, path)
 	}
+	supportFile := strings.Replace(assert.SupportFile, "github.com/junk1tm/assert", importPath, 1)
 
-	// update the import of the assert package, it is local now.
-	supportFile := strings.Replace(assert.SupportFile, "github.com/junk1tm", moduleName, 1)
-
-	if err := writeFile("assert/dotimport/alias.go", supportFile); err != nil {
+	if err := writeFile("dotimport/alias.go", supportFile); err != nil {
 		return err
 	}
 
