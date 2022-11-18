@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/junk1tm/assert"
-	. "github.com/junk1tm/assert/dotimport"
+	"github.com/go-simpler/assert"
+	. "github.com/go-simpler/assert/dotimport"
 )
 
 // assertCall holds the information about calling an assertion.

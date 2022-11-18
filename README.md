@@ -1,9 +1,9 @@
 # assert
 
-[![ci](https://github.com/junk1tm/assert/actions/workflows/go.yml/badge.svg)](https://github.com/junk1tm/assert/actions/workflows/go.yml)
-[![docs](https://pkg.go.dev/badge/github.com/junk1tm/assert.svg)](https://pkg.go.dev/github.com/junk1tm/assert)
-[![report](https://goreportcard.com/badge/github.com/junk1tm/assert)](https://goreportcard.com/report/github.com/junk1tm/assert)
-[![codecov](https://codecov.io/gh/junk1tm/assert/branch/main/graph/badge.svg)](https://codecov.io/gh/junk1tm/assert)
+[![ci](https://github.com/go-simpler/assert/actions/workflows/go.yml/badge.svg)](https://github.com/go-simpler/assert/actions/workflows/go.yml)
+[![docs](https://pkg.go.dev/badge/github.com/go-simpler/assert.svg)](https://pkg.go.dev/github.com/go-simpler/assert)
+[![report](https://goreportcard.com/badge/github.com/go-simpler/assert)](https://goreportcard.com/report/github.com/go-simpler/assert)
+[![codecov](https://codecov.io/gh/go-simpler/assert/branch/main/graph/badge.svg)](https://codecov.io/gh/go-simpler/assert)
 
 Common assertions to use with the standard testing package
 
@@ -22,7 +22,7 @@ assert.Equal[F](t, 1, 2) // [F] for t.Fatalf()
 ## 📦 Install
 
 ```shell
-go get github.com/junk1tm/assert
+go get github.com/go-simpler/assert
 ```
 
 ⚠️ This package is not even meant to be a dependency! It's tiny (<100 LoC) and
@@ -31,7 +31,7 @@ is a special tool to do this automatically, just add the following directive to
 any `.go` file in the root of your project and run `go generate ./...`:
 
 ```go
-//go:generate go run -tags=installer github.com/junk1tm/assert/cmd/installer .
+//go:generate go run -tags=installer github.com/go-simpler/assert/cmd/installer .
 ```
 
 See the `cmd/installer` documentation for details.
@@ -42,8 +42,8 @@ The `dotimport` subpackage should be dot-imported, so the `E`/`F` parameters
 could be used as local types:
 
 ```go
-"github.com/junk1tm/assert"
-. "github.com/junk1tm/assert/dotimport"
+"github.com/go-simpler/assert"
+. "github.com/go-simpler/assert/dotimport"
 ```
 
 Optional format and arguments can be provided to any assertion to customize the

@@ -3,7 +3,7 @@
 // as if they were local types.
 package dotimport
 
-import "github.com/junk1tm/assert"
+import "github.com/go-simpler/assert"
 
 type (
 	E = assert.E
