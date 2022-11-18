@@ -1,3 +1,3 @@
-module github.com/junk1tm/assert
+module github.com/go-simpler/assert
 
 go 1.19
