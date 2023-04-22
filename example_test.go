@@ -5,8 +5,8 @@ import (
 	"io/fs"
 	"testing"
 
-	"github.com/go-simpler/assert"
-	. "github.com/go-simpler/assert/dotimport"
+	"go-simpler.org/assert"
+	. "go-simpler.org/assert/dotimport"
 )
 
 var t *testing.T
