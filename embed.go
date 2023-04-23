@@ -4,7 +4,7 @@ package assert
 
 import _ "embed"
 
-// These files are embedded for the cmd/installer tool to work. Do not use them.
+// These files are used by the `cmd/installer` tool. Ignore them.
 var (
 	//go:embed LICENSE
 	LICENSE string
