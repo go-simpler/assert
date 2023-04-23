@@ -9,7 +9,7 @@ Common assertions to use with the standard testing package
 
 ## 📌 About
 
-`assert` is a minimalistic replacement for the [stretchr/testify][1] package,
+`assert` is a minimalistic replacement for the [`stretchr/testify`][1] package,
 providing an alternative syntax to switch between `t.Errorf()` and `t.Fatalf()`:
 instead of using separate packages (`assert`/`require`), it ~~ab~~uses type parameters:
 
@@ -87,7 +87,7 @@ assert.AsErr[E](t, err, new(*os.PathError))
 
 ## ❤️ Credits
 
-Inspired by [matryer/is][2].
+Inspired by [`matryer/is`][2].
 The idea of the internal implementation belongs to [xakep666][3].
 
 [1]: https://github.com/stretchr/testify
