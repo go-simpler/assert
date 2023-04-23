@@ -30,10 +30,10 @@ There is also a special tool to do this automatically,
 add the following directive to any `.go` file in the root of your project and run `go generate ./...`:
 
 ```go
-//go:generate go run -tags=installer go-simpler.org/assert/cmd/installer .
+//go:generate go run -tags=copier go-simpler.org/assert/cmd/copier .
 ```
 
-See the `cmd/installer` documentation for details.
+See the `cmd/copier` documentation for details.
 
 ## 📋 Usage
 
