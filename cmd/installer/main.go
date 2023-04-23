@@ -1,18 +1,14 @@
 //go:build installer
 
-// Installer is a convenience tool that copies the assertions into a project, so
-// they could be used without introducing a direct dependency. The tool
-// automatically adds a license header to all copied files, so there is no need
-// to include the LICENSE file.
+// Installer is a convenience tool that copies the assertions into a project,
+// so that they can be used without introducing a direct dependency.
 //
-// To use installer add the following directive to any .go file in the root of
-// your project and run `go generate ./...`:
+// Add the following directive to any .go file in the root of your project and run `go generate ./...`:
 //
-//	go:generate go run -tags=installer go-simpler.org/assert/cmd/installer path/to/pkg
+//	go:generate go run -tags=installer go-simpler.org/assert/cmd/installer <path/to/pkg>
 //
-// Where `path/to/pkg` is the location where you'd like to put the assert
-// package, e.g. `.` to put it into the project root (hint: for libraries it's
-// better to hide it using `internal`).
+// Where <path/to/pkg> is the location where you want to put the generated package,
+// e.g. `.` for the project root (hint: for libraries you may want to put it in `internal`).
 package main
 
 import (

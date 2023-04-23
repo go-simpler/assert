@@ -17,16 +17,14 @@ type assertCall struct {
 	args         []any
 }
 
-// okCall returns an [assertCall] that should happen if the assertion was
-// successful.
+// okCall returns an [assertCall] that should happen if the assertion was successful.
 func okCall() assertCall {
 	return assertCall{
 		helperCalls: 1, // at least one t.Helper() call is always expected
 	}
 }
 
-// errorfCall returns an [assertCall] that should happen if the assertion failed
-// and [testing.T.Errrof] was called.
+// errorfCall returns an [assertCall] that should happen if the assertion failed and [testing.T.Errrof] was called.
 func errorfCall(format string, args ...any) assertCall {
 	return assertCall{
 		helperCalls:  2,
@@ -36,8 +34,7 @@ func errorfCall(format string, args ...any) assertCall {
 	}
 }
 
-// fatalfCall returns an [assertCall] that should happen if the assertion failed
-// and [testing.T.Fatalf] was called.
+// fatalfCall returns an [assertCall] that should happen if the assertion failed and [testing.T.Fatalf] was called.
 func fatalfCall(format string, args ...any) assertCall {
 	return assertCall{
 		helperCalls:  2,
