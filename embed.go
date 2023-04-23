@@ -6,8 +6,6 @@ import _ "embed"
 
 // These files are used by the `cmd/installer` tool. Ignore them.
 var (
-	//go:embed LICENSE
-	LICENSE string
 	//go:embed assert.go
 	MainFile string
 	//go:embed dotimport/alias.go
