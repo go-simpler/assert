@@ -14,7 +14,7 @@ type TB interface {
 }
 
 // Param controls the behaviour of an assertion in case it fails.
-// Either [E] or [F] should be specified as a type parameter when calling the assertion.
+// Either [E] or [F] must be specified as a type parameter when calling the assertion.
 type Param interface {
 	method(t TB) func(format string, args ...any)
 }
@@ -30,42 +30,34 @@ type F struct{}
 func (F) method(t TB) func(format string, args ...any) { return t.Fatalf }
 
 // Equal asserts that got and want are equal.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise Equal panics.
 func Equal[T Param, V any](t TB, got, want V, formatAndArgs ...any) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
-		fail[T](t, formatAndArgs, "got %v; want %v", got, want)
+		fail[T](t, formatAndArgs, "\ngot\t%v\nwant\t%v", got, want)
 	}
 }
 
 // NoErr asserts that err is nil.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise NoErr panics.
 func NoErr[T Param](t TB, err error, formatAndArgs ...any) {
 	t.Helper()
 	if err != nil {
-		fail[T](t, formatAndArgs, "got %v; want no error", err)
+		fail[T](t, formatAndArgs, "\ngot\t%v\nwant\tno error", err)
 	}
 }
 
 // IsErr asserts that [errors.Is](err, target) is true.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise IsErr panics.
 func IsErr[T Param](t TB, err, target error, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.Is(err, target) {
-		fail[T](t, formatAndArgs, "got %v; want %v", err, target)
+		fail[T](t, formatAndArgs, "\ngot\t%v\nwant\t%v", err, target)
 	}
 }
 
 // AsErr asserts that [errors.As](err, target) is true.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise AsErr panics.
 func AsErr[T Param](t TB, err error, target any, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.As(err, target) {
-		fail[T](t, formatAndArgs, "got %T; want %T", err, target)
+		fail[T](t, formatAndArgs, "\ngot\t%T\nwant\t%T", err, target)
 	}
 }
 

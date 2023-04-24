@@ -47,8 +47,8 @@ The `dotimport` subpackage should be dot-imported so that `E` and `F` can be use
 Optional format and arguments can be provided to any assertion to customize the error message:
 
 ```go
-// prints "actual 1; expected 2" instead of "got 1; want 2"
-assert.Equal[E](t, 1, 2, "actual %d; expected %d", 1, 2)
+// prints "actual/expected" instead of "got/want".
+assert.Equal[E](t, 1, 2, "\nactual\t%v\nexpected\t%v", 1, 2)
 ```
 
 ## 🧪 Assertions
