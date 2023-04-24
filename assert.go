@@ -14,7 +14,7 @@ type TB interface {
 }
 
 // Param controls the behaviour of an assertion in case it fails.
-// Either [E] or [F] should be specified as a type parameter when calling the assertion.
+// Either [E] or [F] must be specified as a type parameter when calling the assertion.
 type Param interface {
 	method(t TB) func(format string, args ...any)
 }
@@ -30,8 +30,6 @@ type F struct{}
 func (F) method(t TB) func(format string, args ...any) { return t.Fatalf }
 
 // Equal asserts that got and want are equal.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise Equal panics.
 func Equal[T Param, V any](t TB, got, want V, formatAndArgs ...any) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
@@ -40,8 +38,6 @@ func Equal[T Param, V any](t TB, got, want V, formatAndArgs ...any) {
 }
 
 // NoErr asserts that err is nil.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise NoErr panics.
 func NoErr[T Param](t TB, err error, formatAndArgs ...any) {
 	t.Helper()
 	if err != nil {
@@ -50,8 +46,6 @@ func NoErr[T Param](t TB, err error, formatAndArgs ...any) {
 }
 
 // IsErr asserts that [errors.Is](err, target) is true.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise IsErr panics.
 func IsErr[T Param](t TB, err, target error, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.Is(err, target) {
@@ -60,8 +54,6 @@ func IsErr[T Param](t TB, err, target error, formatAndArgs ...any) {
 }
 
 // AsErr asserts that [errors.As](err, target) is true.
-// Optional formatAndArgs can be provided to customize the error message,
-// the first element must be a string, otherwise AsErr panics.
 func AsErr[T Param](t TB, err error, target any, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.As(err, target) {

@@ -1,35 +1,45 @@
 package assert_test
 
 import (
-	"errors"
-	"io/fs"
-	"testing"
+	"fmt"
+	"os"
 
 	"go-simpler.org/assert"
 	. "go-simpler.org/assert/dotimport"
 )
 
-var t *testing.T
-
 func ExampleEqual() {
-	assert.Equal[E](t, 1, 2) // prints "got 1; want 2"
-	assert.Equal[F](t, 1, 2) // prints "got 1; want 2" and stops the test
+	assert.Equal[E](t, 1, 2)
+	// Output:
+	// got	1
+	// want	2
 }
 
 func ExampleNoErr() {
-	err := errors.New("test")
-	assert.NoErr[E](t, err) // prints "got test; want no error"
-	assert.NoErr[F](t, err) // prints "got test; want no error" and stops the test
+	assert.NoErr[E](t, os.ErrExist)
+	// Output:
+	// got	file already exists
+	// want	no error
 }
 
 func ExampleIsErr() {
-	err := errors.New("test")
-	assert.IsErr[E](t, err, fs.ErrNotExist) // prints "got test; want file does not exist"
-	assert.IsErr[F](t, err, fs.ErrNotExist) // prints "got test; want file does not exist" and stops the test
+	assert.IsErr[E](t, os.ErrExist, os.ErrNotExist)
+	// Output:
+	// got	file already exists
+	// want	file does not exist
 }
 
 func ExampleAsErr() {
-	err := errors.New("test")
-	assert.AsErr[E](t, err, new(*fs.PathError)) // prints "got *errors.errorString; want **fs.PathError"
-	assert.AsErr[F](t, err, new(*fs.PathError)) // prints "got *errors.errorString; want **fs.PathError" and stops the test
+	assert.AsErr[E](t, os.ErrExist, new(*os.PathError))
+	// Output:
+	// got	*errors.errorString
+	// want	**fs.PathError
 }
+
+var t printer
+
+type printer struct{}
+
+func (printer) Helper()                           {}
+func (printer) Errorf(format string, args ...any) { fmt.Printf(format, args...) }
+func (printer) Fatalf(format string, args ...any) { fmt.Printf(format, args...) }
