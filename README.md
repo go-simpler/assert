@@ -1,6 +1,6 @@
 # assert
 
-[![ci](https://github.com/go-simpler/assert/actions/workflows/go.yml/badge.svg)](https://github.com/go-simpler/assert/actions/workflows/go.yml)
+[![ci](https://github.com/go-simpler/assert/actions/workflows/ci.yml/badge.svg)](https://github.com/go-simpler/assert/actions/workflows/ci.yml)
 [![docs](https://pkg.go.dev/badge/go-simpler.org/assert.svg)](https://pkg.go.dev/go-simpler.org/assert)
 [![report](https://goreportcard.com/badge/go-simpler.org/assert)](https://goreportcard.com/report/go-simpler.org/assert)
 [![codecov](https://codecov.io/gh/go-simpler/assert/branch/main/graph/badge.svg)](https://codecov.io/gh/go-simpler/assert)
