@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v[0-9]+.[0-9]+.[0-9]+' ]
+  pull_request:
+    branches: [ main ]
+  schedule: [ cron: '0 0 * * MON' ]
+  workflow_dispatch: # manually
+
+jobs:
+  test:
+    uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows
+  lint:
+    uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
+  release:
+    if: startswith(github.ref, 'refs/tags/')
+    uses: go-simpler/.github/.github/workflows/release.yml@reuse-workflows
