@@ -19,7 +19,7 @@ jobs:
   lint:
     uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
   release:
-    if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
     uses: go-simpler/.github/.github/workflows/release.yml@reuse-workflows
     with:
       tag: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
