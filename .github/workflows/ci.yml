@@ -6,20 +6,23 @@ on:
     tags: [ 'v[0-9]+.[0-9]+.[0-9]+' ]
   pull_request:
     branches: [ main ]
-  schedule: [ cron: '0 0 * * MON' ]
+  schedule:
+    - cron: '0 0 * * MON'
   workflow_dispatch:
     inputs:
-      tag:
+      version:
         type: string
         required: true
 
 jobs:
   test:
     uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows
+
   lint:
     uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
+
   release:
     if: ${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
     uses: go-simpler/.github/.github/workflows/release.yml@reuse-workflows
     with:
-      tag: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+      version: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
