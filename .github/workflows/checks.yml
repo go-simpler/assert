@@ -1,4 +1,4 @@
-name: test
+name: checks
 
 on:
   push:
@@ -12,3 +12,5 @@ on:
 jobs:
   test:
     uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows
+  lint:
+    uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
