@@ -10,5 +10,5 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  run:
     uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows

@@ -11,7 +11,7 @@ on:
         description: The next semantic version to release
 
 jobs:
-  release:
+  run:
     uses: go-simpler/.github/.github/workflows/release.yml@reuse-workflows
     with:
       version: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}
