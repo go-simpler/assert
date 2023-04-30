@@ -11,6 +11,6 @@ on:
 
 jobs:
   test:
-    uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows
+    uses: go-simpler/.github/.github/workflows/test.yml@main
   lint:
-    uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
+    uses: go-simpler/.github/.github/workflows/lint.yml@main
