@@ -10,5 +10,5 @@ on:
   workflow_dispatch:
 
 jobs:
-  run:
+  lint:
     uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
