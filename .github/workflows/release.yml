@@ -1,13 +1,8 @@
-name: CI
+name: release
 
 on:
   push:
-    branches: [ main ]
     tags: [ 'v[0-9]+.[0-9]+.[0-9]+' ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * MON'
   workflow_dispatch:
     inputs:
       version:
@@ -16,14 +11,7 @@ on:
         description: The next semantic version to release
 
 jobs:
-  test:
-    uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows
-
-  lint:
-    uses: go-simpler/.github/.github/workflows/lint.yml@reuse-workflows
-
   release:
-    if: ${{ github.ref_type == 'tag' || github.event_name == 'workflow_dispatch' }}
     uses: go-simpler/.github/.github/workflows/release.yml@reuse-workflows
     with:
       version: ${{ github.event_name == 'push' && github.ref_name || inputs.version }}

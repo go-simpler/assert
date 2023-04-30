@@ -1,0 +1,14 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * MON'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: go-simpler/.github/.github/workflows/test.yml@reuse-workflows
