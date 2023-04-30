@@ -14,3 +14,5 @@ jobs:
     uses: go-simpler/.github/.github/workflows/test.yml@main
   lint:
     uses: go-simpler/.github/.github/workflows/lint.yml@main
+  vuln:
+    uses: go-simpler/.github/.github/workflows/vuln.yml@main
