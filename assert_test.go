@@ -104,13 +104,13 @@ func TestIsErr(t *testing.T) {
 			fn:     assert.IsErr[E],
 			err:    errFoo,
 			target: errBar,
-			want:   assertCall{helperCalls: 2, errorfCalled: true, message: "errors.Is == false\ngot:  foo\nwant: bar"},
+			want:   assertCall{helperCalls: 2, errorfCalled: true, message: "errors.Is() mismatch\ngot:  foo\nwant: bar"},
 		},
 		"fail [F]": {
 			fn:     assert.IsErr[F],
 			err:    errFoo,
 			target: errBar,
-			want:   assertCall{helperCalls: 2, fatalfCalled: true, message: "errors.Is == false\ngot:  foo\nwant: bar"},
+			want:   assertCall{helperCalls: 2, fatalfCalled: true, message: "errors.Is() mismatch\ngot:  foo\nwant: bar"},
 		},
 		"fail [F] (custom message)": {
 			fn:            assert.IsErr[F],
@@ -148,13 +148,13 @@ func TestAsErr(t *testing.T) {
 			fn:     assert.AsErr[E],
 			err:    errFoo,
 			target: new(barError),
-			want:   assertCall{helperCalls: 2, errorfCalled: true, message: "errors.As == false\ngot:  assert_test.fooError\nwant: assert_test.barError"},
+			want:   assertCall{helperCalls: 2, errorfCalled: true, message: "errors.As() mismatch\ngot:  assert_test.fooError\nwant: assert_test.barError"},
 		},
 		"fail [F]": {
 			fn:     assert.AsErr[F],
 			err:    errFoo,
 			target: new(barError),
-			want:   assertCall{helperCalls: 2, fatalfCalled: true, message: "errors.As == false\ngot:  assert_test.fooError\nwant: assert_test.barError"},
+			want:   assertCall{helperCalls: 2, fatalfCalled: true, message: "errors.As() mismatch\ngot:  assert_test.fooError\nwant: assert_test.barError"},
 		},
 		"fail [F] (custom message)": {
 			fn:            assert.AsErr[F],
@@ -198,7 +198,7 @@ func TestPanics(t *testing.T) {
 			fn:      assert.Panics[F],
 			panicFn: func() { panic(41) },
 			v:       42,
-			want:    assertCall{helperCalls: 3, fatalfCalled: true, message: "unexpected panic argument\ngot:  41\nwant: 42"},
+			want:    assertCall{helperCalls: 3, fatalfCalled: true, message: "panic argument mismatch\ngot:  41\nwant: 42"},
 		},
 		"fail [F] (custom message)": {
 			fn:            assert.Panics[F],
@@ -240,16 +240,16 @@ func (ac *assertCall) Fatalf(format string, args ...any) {
 func testAssertCall(t *testing.T, got, want assertCall) {
 	t.Helper()
 	if got.helperCalls != want.helperCalls {
-		t.Errorf("t.Helper() calls: got %d want %d", got.helperCalls, want.helperCalls)
+		t.Errorf("t.Helper() calls mismatch\ngot:  %d\nwant: %d", got.helperCalls, want.helperCalls)
 	}
 	if got.errorfCalled != want.errorfCalled {
-		t.Errorf("t.Errorf() called: got %t want %t", got.errorfCalled, want.errorfCalled)
+		t.Errorf("t.Errorf() called mismatch\ngot:  %t\nwant: %t", got.errorfCalled, want.errorfCalled)
 	}
 	if got.fatalfCalled != want.fatalfCalled {
-		t.Errorf("t.Fatalf() called: got %t want %t", got.fatalfCalled, want.fatalfCalled)
+		t.Errorf("t.Fatalf() called mismatch\ngot:  %t\nwant: %t", got.fatalfCalled, want.fatalfCalled)
 	}
 	if got.message != want.message {
-		t.Errorf("unexpected message\ngot:  %q\nwant: %q", got.message, want.message)
+		t.Errorf("message mismatch\ngot:  %q\nwant: %q", got.message, want.message)
 	}
 }
 

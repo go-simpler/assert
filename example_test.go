@@ -22,14 +22,14 @@ func ExampleNoErr() {
 
 func ExampleIsErr() {
 	assert.IsErr[E](t, os.ErrExist, os.ErrNotExist)
-	// Output: errors.Is == false
+	// Output: errors.Is() mismatch
 	// got:  file already exists
 	// want: file does not exist
 }
 
 func ExampleAsErr() {
 	assert.AsErr[E](t, os.ErrExist, new(*os.PathError))
-	// Output: errors.As == false
+	// Output: errors.As() mismatch
 	// got:  *errors.errorString
 	// want: *fs.PathError
 }
