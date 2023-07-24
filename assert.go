@@ -49,7 +49,7 @@ func NoErr[T Param](t TB, err error, formatAndArgs ...any) {
 func IsErr[T Param](t TB, err, target error, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.Is(err, target) {
-		fail[T](t, formatAndArgs, "errors.Is == false\ngot:  %v\nwant: %v", err, target)
+		fail[T](t, formatAndArgs, "errors.Is() mismatch\ngot:  %v\nwant: %v", err, target)
 	}
 }
 
@@ -58,8 +58,23 @@ func AsErr[T Param](t TB, err error, target any, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.As(err, target) {
 		typ := reflect.TypeOf(target).Elem() // dereference the pointer to get the real type.
-		fail[T](t, formatAndArgs, "errors.As == false\ngot:  %T\nwant: %s", err, typ)
+		fail[T](t, formatAndArgs, "errors.As() mismatch\ngot:  %T\nwant: %s", err, typ)
 	}
+}
+
+// Panics asserts that the given function panics with the argument v.
+func Panics[T Param](t TB, fn func(), v any, formatAndArgs ...any) {
+	t.Helper()
+	defer func() {
+		t.Helper()
+		switch r := recover(); {
+		case r == nil:
+			fail[T](t, formatAndArgs, "the function didn't panic")
+		case !reflect.DeepEqual(r, v):
+			fail[T](t, nil, "panic argument mismatch\ngot:  %v\nwant: %v", r, v)
+		}
+	}()
+	fn()
 }
 
 // fail marks the test as having failed and continues/stops its execution based on T's type.

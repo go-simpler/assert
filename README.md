@@ -85,6 +85,14 @@ Asserts that `errors.As(err, target)` is true.
 assert.AsErr[E](t, err, new(*os.PathError))
 ```
 
+### Panics
+
+Asserts that the given function panics with the argument `v`.
+
+```go
+assert.Panics[E](t, func() { /* panic? */ }, 42)
+```
+
 ## ❤️ Credits
 
 Inspired by [`matryer/is`][2].
