@@ -18,23 +18,23 @@ func TestEqual(t *testing.T) {
 		"ok [E]": {
 			fn: assert.Equal[E, int],
 			a:  1, b: 1,
-			want: okCall(),
+			want: assertCall{helperCalls: 1},
 		},
 		"fail [E]": {
 			fn: assert.Equal[E, int],
 			a:  1, b: 2,
-			want: errorfCall("values are not equal\ngot:  1\nwant: 2"),
+			want: assertCall{helperCalls: 2, errorfCalled: true, message: "values are not equal\ngot:  1\nwant: 2"},
 		},
 		"fail [F]": {
 			fn: assert.Equal[F, int],
 			a:  1, b: 2,
-			want: fatalfCall("values are not equal\ngot:  1\nwant: 2"),
+			want: assertCall{helperCalls: 2, fatalfCalled: true, message: "values are not equal\ngot:  1\nwant: 2"},
 		},
 		"fail [F] (custom message)": {
 			fn: assert.Equal[F, int],
 			a:  1, b: 2,
 			formatAndArgs: []any{"%d != %d", 1, 2},
-			want:          fatalfCall("1 != 2"),
+			want:          assertCall{helperCalls: 2, fatalfCalled: true, message: "1 != 2"},
 		},
 	}
 
@@ -57,23 +57,23 @@ func TestNoErr(t *testing.T) {
 		"ok [E]": {
 			fn:   assert.NoErr[E],
 			err:  nil,
-			want: okCall(),
+			want: assertCall{helperCalls: 1},
 		},
 		"fail [E]": {
 			fn:   assert.NoErr[E],
 			err:  errFoo,
-			want: errorfCall("unexpected error: foo"),
+			want: assertCall{helperCalls: 2, errorfCalled: true, message: "unexpected error: foo"},
 		},
 		"fail [F]": {
 			fn:   assert.NoErr[F],
 			err:  errFoo,
-			want: fatalfCall("unexpected error: foo"),
+			want: assertCall{helperCalls: 2, fatalfCalled: true, message: "unexpected error: foo"},
 		},
 		"fail [F] (custom message)": {
 			fn:            assert.NoErr[F],
 			err:           errFoo,
 			formatAndArgs: []any{"%v != nil", errFoo},
-			want:          fatalfCall("foo != nil"),
+			want:          assertCall{helperCalls: 2, fatalfCalled: true, message: "foo != nil"},
 		},
 	}
 
@@ -98,26 +98,26 @@ func TestIsErr(t *testing.T) {
 			fn:     assert.IsErr[E],
 			err:    errFoo,
 			target: errFoo,
-			want:   okCall(),
+			want:   assertCall{helperCalls: 1},
 		},
 		"fail [E]": {
 			fn:     assert.IsErr[E],
 			err:    errFoo,
 			target: errBar,
-			want:   errorfCall("errors.Is == false\ngot:  foo\nwant: bar"),
+			want:   assertCall{helperCalls: 2, errorfCalled: true, message: "errors.Is == false\ngot:  foo\nwant: bar"},
 		},
 		"fail [F]": {
 			fn:     assert.IsErr[F],
 			err:    errFoo,
 			target: errBar,
-			want:   fatalfCall("errors.Is == false\ngot:  foo\nwant: bar"),
+			want:   assertCall{helperCalls: 2, fatalfCalled: true, message: "errors.Is == false\ngot:  foo\nwant: bar"},
 		},
 		"fail [F] (custom message)": {
 			fn:            assert.IsErr[F],
 			err:           errFoo,
 			target:        errBar,
 			formatAndArgs: []any{"%v != %v", errFoo, errBar},
-			want:          fatalfCall("foo != bar"),
+			want:          assertCall{helperCalls: 2, fatalfCalled: true, message: "foo != bar"},
 		},
 	}
 
@@ -142,26 +142,26 @@ func TestAsErr(t *testing.T) {
 			fn:     assert.AsErr[E],
 			err:    errFoo,
 			target: new(fooError),
-			want:   okCall(),
+			want:   assertCall{helperCalls: 1},
 		},
 		"fail [E]": {
 			fn:     assert.AsErr[E],
 			err:    errFoo,
 			target: new(barError),
-			want:   errorfCall("errors.As == false\ngot:  assert_test.fooError\nwant: assert_test.barError"),
+			want:   assertCall{helperCalls: 2, errorfCalled: true, message: "errors.As == false\ngot:  assert_test.fooError\nwant: assert_test.barError"},
 		},
 		"fail [F]": {
 			fn:     assert.AsErr[F],
 			err:    errFoo,
 			target: new(barError),
-			want:   fatalfCall("errors.As == false\ngot:  assert_test.fooError\nwant: assert_test.barError"),
+			want:   assertCall{helperCalls: 2, fatalfCalled: true, message: "errors.As == false\ngot:  assert_test.fooError\nwant: assert_test.barError"},
 		},
 		"fail [F] (custom message)": {
 			fn:            assert.AsErr[F],
 			err:           errFoo,
 			target:        new(barError),
 			formatAndArgs: []any{"%T != %T", errFoo, errBar},
-			want:          fatalfCall("assert_test.fooError != assert_test.barError"),
+			want:          assertCall{helperCalls: 2, fatalfCalled: true, message: "assert_test.fooError != assert_test.barError"},
 		},
 	}
 
@@ -169,6 +169,50 @@ func TestAsErr(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			var got assertCall
 			tt.fn(&got, tt.err, tt.target, tt.formatAndArgs...)
+			testAssertCall(t, got, tt.want)
+		})
+	}
+}
+
+func TestPanics(t *testing.T) {
+	tests := map[string]struct {
+		fn            func(t assert.TB, fn func(), v any, formatAndArgs ...any)
+		panicFn       func()
+		v             any
+		formatAndArgs []any
+		want          assertCall
+	}{
+		"ok [E]": {
+			fn:      assert.Panics[E],
+			panicFn: func() { panic(42) },
+			v:       42,
+			want:    assertCall{helperCalls: 2},
+		},
+		"fail [E] (didn't panic)": {
+			fn:      assert.Panics[E],
+			panicFn: func() {},
+			v:       42,
+			want:    assertCall{helperCalls: 3, errorfCalled: true, message: "the function didn't panic"},
+		},
+		"fail [F] (unexpected argument)": {
+			fn:      assert.Panics[F],
+			panicFn: func() { panic(41) },
+			v:       42,
+			want:    assertCall{helperCalls: 3, fatalfCalled: true, message: "unexpected panic argument\ngot:  41\nwant: 42"},
+		},
+		"fail [F] (custom message)": {
+			fn:            assert.Panics[F],
+			panicFn:       func() {},
+			v:             42,
+			formatAndArgs: []any{"no panic occured"},
+			want:          assertCall{helperCalls: 3, fatalfCalled: true, message: "no panic occured"},
+		},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			var got assertCall
+			tt.fn(&got, tt.panicFn, tt.v, tt.formatAndArgs...)
 			testAssertCall(t, got, tt.want)
 		})
 	}
@@ -191,28 +235,6 @@ func (ac *assertCall) Errorf(format string, args ...any) {
 func (ac *assertCall) Fatalf(format string, args ...any) {
 	ac.fatalfCalled = true
 	ac.message = fmt.Sprintf(format, args...)
-}
-
-func okCall() assertCall {
-	return assertCall{
-		helperCalls: 1, // at least one t.Helper() call is always expected.
-	}
-}
-
-func errorfCall(message string) assertCall {
-	return assertCall{
-		helperCalls:  2,
-		errorfCalled: true,
-		message:      message,
-	}
-}
-
-func fatalfCall(message string) assertCall {
-	return assertCall{
-		helperCalls:  2,
-		fatalfCalled: true,
-		message:      message,
-	}
 }
 
 func testAssertCall(t *testing.T, got, want assertCall) {

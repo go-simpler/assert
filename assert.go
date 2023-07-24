@@ -67,11 +67,12 @@ func Panics[T Param](t TB, fn func(), v any, formatAndArgs ...any) {
 	t.Helper()
 	defer func() {
 		t.Helper()
-		if r := recover(); r != nil {
-			Equal[T](t, r, v, "unexpected panic argument\ngot:  %v\nwant: %v", r, v)
-			return
+		switch r := recover(); {
+		case r == nil:
+			fail[T](t, formatAndArgs, "the function didn't panic")
+		case !reflect.DeepEqual(r, v):
+			fail[T](t, nil, "unexpected panic argument\ngot:  %v\nwant: %v", r, v)
 		}
-		fail[T](t, formatAndArgs, "the function didn't panic")
 	}()
 	fn()
 }
