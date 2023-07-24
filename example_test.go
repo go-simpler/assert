@@ -16,23 +16,30 @@ func ExampleEqual() {
 }
 
 func ExampleNoErr() {
-	assert.NoErr[E](t, os.ErrExist)
+	assert.NoErr[E](t, err)
 	// Output: unexpected error: file already exists
 }
 
 func ExampleIsErr() {
-	assert.IsErr[E](t, os.ErrExist, os.ErrNotExist)
+	assert.IsErr[E](t, err, os.ErrNotExist)
 	// Output: errors.Is() mismatch
 	// got:  file already exists
 	// want: file does not exist
 }
 
 func ExampleAsErr() {
-	assert.AsErr[E](t, os.ErrExist, new(*os.PathError))
+	assert.AsErr[E](t, err, new(*os.PathError))
 	// Output: errors.As() mismatch
 	// got:  *errors.errorString
 	// want: *fs.PathError
 }
+
+func ExamplePanics() {
+	assert.Panics[E](t, func() { /* panic? */ }, 42)
+	// Output: the function didn't panic
+}
+
+var err = os.ErrExist
 
 var t printer
 
