@@ -29,19 +29,19 @@ type F struct{}
 
 func (F) method(t TB) func(format string, args ...any) { return t.Fatalf }
 
-// Equal asserts that got and want are equal.
+// Equal asserts that two values are equal.
 func Equal[T Param, V any](t TB, got, want V, formatAndArgs ...any) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
-		fail[T](t, formatAndArgs, "\ngot\t%v\nwant\t%v", got, want)
+		fail[T](t, formatAndArgs, "values are not equal\ngot:  %v\nwant: %v", got, want)
 	}
 }
 
-// NoErr asserts that err is nil.
+// NoErr asserts that the error is nil.
 func NoErr[T Param](t TB, err error, formatAndArgs ...any) {
 	t.Helper()
 	if err != nil {
-		fail[T](t, formatAndArgs, "\ngot\t%v\nwant\tno error", err)
+		fail[T](t, formatAndArgs, "unexpected error: %v", err)
 	}
 }
 
@@ -49,7 +49,7 @@ func NoErr[T Param](t TB, err error, formatAndArgs ...any) {
 func IsErr[T Param](t TB, err, target error, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.Is(err, target) {
-		fail[T](t, formatAndArgs, "\ngot\t%v\nwant\t%v", err, target)
+		fail[T](t, formatAndArgs, "errors.Is == false\ngot:  %v\nwant: %v", err, target)
 	}
 }
 
@@ -57,7 +57,8 @@ func IsErr[T Param](t TB, err, target error, formatAndArgs ...any) {
 func AsErr[T Param](t TB, err error, target any, formatAndArgs ...any) {
 	t.Helper()
 	if !errors.As(err, target) {
-		fail[T](t, formatAndArgs, "\ngot\t%T\nwant\t%T", err, target)
+		typ := reflect.TypeOf(target).Elem() // dereference the pointer to get the real type.
+		fail[T](t, formatAndArgs, "errors.As == false\ngot:  %T\nwant: %s", err, typ)
 	}
 }
 

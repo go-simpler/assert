@@ -48,7 +48,7 @@ Optional format and arguments can be provided to any assertion to customize the 
 
 ```go
 // prints "actual/expected" instead of "got/want".
-assert.Equal[E](t, 1, 2, "\nactual\t%v\nexpected\t%v", 1, 2)
+assert.Equal[E](t, 1, 2, "values are not equal\nactual: %v\nexpected: %v", 1, 2)
 ```
 
 ## 🧪 Assertions
@@ -63,7 +63,7 @@ assert.Equal[E](t, 1, 2)
 
 ### NoErr
 
-Asserts that `err` is nil.
+Asserts that the error is nil.
 
 ```go
 assert.NoErr[E](t, err)

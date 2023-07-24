@@ -10,30 +10,28 @@ import (
 
 func ExampleEqual() {
 	assert.Equal[E](t, 1, 2)
-	// Output:
-	// got	1
-	// want	2
+	// Output: values are not equal
+	// got:  1
+	// want: 2
 }
 
 func ExampleNoErr() {
 	assert.NoErr[E](t, os.ErrExist)
-	// Output:
-	// got	file already exists
-	// want	no error
+	// Output: unexpected error: file already exists
 }
 
 func ExampleIsErr() {
 	assert.IsErr[E](t, os.ErrExist, os.ErrNotExist)
-	// Output:
-	// got	file already exists
-	// want	file does not exist
+	// Output: errors.Is == false
+	// got:  file already exists
+	// want: file does not exist
 }
 
 func ExampleAsErr() {
 	assert.AsErr[E](t, os.ErrExist, new(*os.PathError))
-	// Output:
-	// got	*errors.errorString
-	// want	**fs.PathError
+	// Output: errors.As == false
+	// got:  *errors.errorString
+	// want: *fs.PathError
 }
 
 var t printer
