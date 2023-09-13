@@ -26,8 +26,8 @@ go get go-simpler.org/assert
 
 ⚠️ This package is not even meant to be a dependency!
 It's tiny (<100 LoC), so you can just copy-paste it into your project.
-There is also a special tool to do this automatically,
-add the following directive to any `.go` file in the root of your project and run `go generate ./...`:
+There is also a special tool to do this automatically:
+just add the following directive to any `.go` file and run `go generate ./...`:
 
 ```go
 //go:generate go run -tags=copier go-simpler.org/assert/cmd/copier .
@@ -50,8 +50,6 @@ Optional format and arguments can be provided to any assertion to customize the 
 // prints "actual/expected" instead of "got/want".
 assert.Equal[E](t, 1, 2, "values are not equal\nactual: %v\nexpected: %v", 1, 2)
 ```
-
-## 🧪 Assertions
 
 ### Equal
 
