@@ -3,9 +3,9 @@
 // Copier is a convenience tool that copies the assertions into a project,
 // so that they can be used without introducing a direct dependency.
 //
-// Add the following directive to any .go file in the root of your project and run `go generate ./...`:
+// Add the following directive to any .go file and run `go generate ./...`:
 //
-//	go:generate go run -tags=copier go-simpler.org/assert/cmd/copier <path/to/pkg>
+//	go:generate go run -tags=copier go-simpler.org/assert/cmd/copier@latest <path/to/pkg>
 //
 // Where <path/to/pkg> is the location where you want to put the generated package,
 // e.g. `.` for the project root (hint: for libraries you may want to put it in `internal`).
@@ -40,7 +40,7 @@ func run() error {
 	}
 
 	path := filepath.Join(os.Args[1], "assert")
-	fullpath := filepath.Join(path, "dotimport")
+	fullpath := filepath.Join(path, "EF")
 
 	if err := os.MkdirAll(fullpath, 0755); err != nil && !errors.Is(err, os.ErrExist) {
 		return err
@@ -54,13 +54,12 @@ func run() error {
 		importPath = filepath.Join(moduleName, path)
 	}
 
-	// update the import in the `dotimport/alias.go` file.
-	supportFile := strings.Replace(assert.SupportFile, "go-simpler.org/assert", importPath, 1)
+	aliasFile := strings.Replace(assert.AliasFile, "go-simpler.org/assert", importPath, 1)
 
 	if err := writeFile("assert.go", assert.MainFile); err != nil {
 		return err
 	}
-	if err := writeFile("dotimport/alias.go", supportFile); err != nil {
+	if err := writeFile("EF/alias.go", aliasFile); err != nil {
 		return err
 	}
 
