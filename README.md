@@ -30,18 +30,18 @@ There is also a special tool to do this automatically:
 just add the following directive to any `.go` file and run `go generate ./...`:
 
 ```go
-//go:generate go run -tags=copier go-simpler.org/assert/cmd/copier .
+//go:generate go run -tags=copier go-simpler.org/assert/cmd/copier@latest .
 ```
 
 See the `cmd/copier` documentation for details.
 
 ## 📋 Usage
 
-The `dotimport` subpackage should be dot-imported so that `E` and `F` can be used as local types:
+The `EF` subpackage should be dot-imported so that `E` and `F` can be used as local types:
 
 ```go
 "go-simpler.org/assert"
-. "go-simpler.org/assert/dotimport"
+. "go-simpler.org/assert/EF"
 ```
 
 Optional format and arguments can be provided to any assertion to customize the error message:

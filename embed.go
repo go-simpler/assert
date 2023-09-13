@@ -8,6 +8,6 @@ import _ "embed"
 var (
 	//go:embed assert.go
 	MainFile string
-	//go:embed dotimport/alias.go
-	SupportFile string
+	//go:embed EF/alias.go
+	AliasFile string
 )

@@ -1,6 +1,6 @@
-// Package dotimport provides type aliases for the parent [assert] package.
+// Package EF provides type aliases for the parent [assert] package.
 // It is intended to be dot-imported so that [E] and [F] can be used as local types.
-package dotimport
+package EF
 
 import "go-simpler.org/assert"
 
