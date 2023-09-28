@@ -12,10 +12,13 @@
 package main
 
 import (
-	"bufio"
+	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strings"
 
@@ -23,18 +26,21 @@ import (
 )
 
 func main() {
-	if err := run(); err != nil {
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	if err := run(ctx); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func run() error {
+func run(ctx context.Context) error {
 	if len(os.Args) < 2 {
 		return errors.New("path to package is not specified")
 	}
 
-	moduleName, err := readModuleName()
+	moduleName, err := readModuleName(ctx)
 	if err != nil {
 		return err
 	}
@@ -66,20 +72,28 @@ func run() error {
 	return nil
 }
 
-func readModuleName() (string, error) {
-	f, err := os.Open("go.mod")
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
+func readModuleName(ctx context.Context) (string, error) {
+	args := [...]string{"go", "mod", "edit", "-json"}
 
-	header, err := bufio.NewReader(f).ReadString('\n')
+	out, err := exec.CommandContext(ctx, args[0], args[1:]...).Output()
 	if err != nil {
-		return "", err
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
+			return "", fmt.Errorf("running %q: %w: %s", strings.Join(args[:], " "), err, string(exitErr.Stderr))
+		}
+		return "", fmt.Errorf("running %q: %w", strings.Join(args[:], " "), err)
 	}
 
-	name := strings.TrimPrefix(header, "module")
-	return strings.TrimSpace(name), nil
+	var info struct {
+		Module struct {
+			Path string `json:"Path"`
+		} `json:"Module"`
+	}
+	if err := json.Unmarshal(out, &info); err != nil {
+		return "", fmt.Errorf("decoding module info: %w", err)
+	}
+
+	return info.Module.Path, nil
 }
 
 func writeFile(name, content string) error {
