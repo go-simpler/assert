@@ -5,7 +5,7 @@
 [![goreportcard](https://goreportcard.com/badge/go-simpler.org/assert)](https://goreportcard.com/report/go-simpler.org/assert)
 [![codecov](https://codecov.io/gh/go-simpler/assert/branch/main/graph/badge.svg)](https://codecov.io/gh/go-simpler/assert)
 
-Common assertions to use with the standard testing package
+Common assertions to use with the standard `testing` package
 
 ## 📌 About
 
@@ -30,7 +30,7 @@ There is also a special tool to do this automatically:
 just add the following directive to any `.go` file and run `go generate ./...`:
 
 ```go
-//go:generate go run -tags=copier go-simpler.org/assert/cmd/copier@latest .
+//go:generate go run -tags=copier go-simpler.org/assert/cmd/copier@latest
 ```
 
 See the `cmd/copier` documentation for details.
