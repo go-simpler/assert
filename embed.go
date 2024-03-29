@@ -1,10 +1,9 @@
-//go:build copier
+//go:build cp
 
 package assert
 
 import _ "embed"
 
-// These files are used by the cmd/copier tool. Ignore them.
 var (
 	//go:embed assert.go
 	MainFile string

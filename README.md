@@ -29,7 +29,7 @@ go get go-simpler.org/assert
 > [!tip]
 > When developing a library, you may want to keep `go.mod` small (or, even better, empty).
 > In such cases, it is recommended to just copy-paste `assert`, as it is tiny and rarely updated.
-> See the `cmd/copier` helper to do this automatically.
+> See the `cmd/cp` utility to do this automatically.
 
 ## 📋 Usage
 
