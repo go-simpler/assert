@@ -1,4 +1,4 @@
-// Package assert provides common assertions to use with the standard [testing] package.
+// Package assert implements assertions for the standard [testing] package.
 package assert
 
 import (
@@ -6,25 +6,25 @@ import (
 	"reflect"
 )
 
-// TB is a tiny subset of [testing.TB] used by [assert].
+// TB is a tiny subset of [testing.TB].
 type TB interface {
 	Helper()
 	Errorf(format string, args ...any)
 	Fatalf(format string, args ...any)
 }
 
-// Param controls the behaviour of an assertion in case it fails.
-// Either [E] or [F] must be specified as a type parameter when calling the assertion.
+// Param controls the behavior of an assertion if it fails.
+// Either [E] or [F] must be specified as the type parameter.
 type Param interface {
 	method(t TB) func(format string, args ...any)
 }
 
-// E is a [Param] that marks the test as having failed but continues its execution (similar to [testing.T.Errorf]).
+// E is a [Param] that marks the test as failed but continues execution (similar to [testing.T.Errorf]).
 type E struct{}
 
 func (E) method(t TB) func(format string, args ...any) { return t.Errorf }
 
-// F is a [Param] that marks the test as having failed and stops its execution (similar to [testing.T.Fatalf]).
+// F is a [Param] that marks the test as failed and stops execution (similar to [testing.T.Fatalf]).
 type F struct{}
 
 func (F) method(t TB) func(format string, args ...any) { return t.Fatalf }
@@ -77,7 +77,6 @@ func Panics[T Param](t TB, fn func(), v any, formatAndArgs ...any) {
 	fn()
 }
 
-// fail marks the test as having failed and continues/stops its execution based on T's type.
 func fail[T Param](t TB, customFormatAndArgs []any, format string, args ...any) {
 	t.Helper()
 	if len(customFormatAndArgs) > 0 {

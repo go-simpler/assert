@@ -5,7 +5,7 @@
 [![goreportcard](https://goreportcard.com/badge/go-simpler.org/assert)](https://goreportcard.com/report/go-simpler.org/assert)
 [![codecov](https://codecov.io/gh/go-simpler/assert/branch/main/graph/badge.svg)](https://codecov.io/gh/go-simpler/assert)
 
-Common assertions to use with the `testing` package.
+Assertions for the standard `testing` package.
 
 ## 📌 About
 
@@ -20,19 +20,16 @@ assert.Equal[F](t, 1, 2) // [F] for t.Fatalf()
 
 ## 📦 Install
 
+Go 1.21+
+
 ```shell
 go get go-simpler.org/assert
 ```
 
-> [!note]
-> This package is not even meant to be a dependency!
-> It's tiny (<100 LoC), so you can just copy-paste it into your project.
-> There is also a special tool to do this automatically:
-> just add the following directive to any `.go` file and run `go generate ./...`:
-> ```go
-> //go:generate go run -tags=copier go-simpler.org/assert/cmd/copier@latest
-> ```
-> See the `cmd/copier` documentation for details.
+> [!tip]
+> When developing a library, you may want to keep `go.mod` small (or, even better, empty).
+> In such cases, it is recommended to just copy-paste `assert`, as it is tiny and rarely updated.
+> See the `cmd/copier` helper to do this automatically.
 
 ## 📋 Usage
 
@@ -43,7 +40,7 @@ The `EF` subpackage should be dot-imported so that `E` and `F` can be used as lo
 . "go-simpler.org/assert/EF"
 ```
 
-Optional format and arguments can be provided to any assertion to customize the error message:
+Optional format and arguments can be provided to each assertion to customize the error message:
 
 ```go
 assert.Equal[E](t, 1, 2, "%d != %d", 1, 2) // prints "1 != 2"
