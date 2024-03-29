@@ -63,6 +63,7 @@ func AsErr[T Param](t TB, err error, target any, formatAndArgs ...any) {
 }
 
 // Panics asserts that the given function panics with the argument v.
+// If v is nil, the panic argument is ignored.
 func Panics[T Param](t TB, fn func(), v any, formatAndArgs ...any) {
 	t.Helper()
 	defer func() {
@@ -70,7 +71,7 @@ func Panics[T Param](t TB, fn func(), v any, formatAndArgs ...any) {
 		switch r := recover(); {
 		case r == nil:
 			fail[T](t, formatAndArgs, "the function didn't panic")
-		case !reflect.DeepEqual(r, v):
+		case v != nil && !reflect.DeepEqual(r, v):
 			fail[T](t, nil, "panic argument mismatch\ngot:  %v\nwant: %v", r, v)
 		}
 	}()
