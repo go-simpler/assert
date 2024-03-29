@@ -188,13 +188,19 @@ func TestPanics(t *testing.T) {
 			v:       42,
 			want:    assertCall{helperCalls: 2},
 		},
+		"ok [E] (nil argument)": {
+			fn:      assert.Panics[E],
+			panicFn: func() { panic(42) },
+			v:       nil,
+			want:    assertCall{helperCalls: 2},
+		},
 		"fail [E] (didn't panic)": {
 			fn:      assert.Panics[E],
 			panicFn: func() {},
 			v:       42,
 			want:    assertCall{helperCalls: 3, errorfCalled: true, message: "the function didn't panic"},
 		},
-		"fail [F] (unexpected argument)": {
+		"fail [F] (argument mismatch)": {
 			fn:      assert.Panics[F],
 			panicFn: func() { panic(41) },
 			v:       42,
